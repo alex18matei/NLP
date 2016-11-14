@@ -55,6 +55,6 @@ public class DBPediaAgent {
 
     private String getValueFromURI(String value) {
         String[] splits = value.split("/");
-        return splits[splits.length-1];
+        return splits[splits.length-1].split("[0-9]")[0];
     }
 }
