@@ -35,10 +35,6 @@ public class MyJSONParser {
         return content;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
     public String getUriContent() {
         return uriContent;
     }

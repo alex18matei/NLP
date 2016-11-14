@@ -1,8 +1,5 @@
 package parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import main.Word;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +10,6 @@ public class DBPediaAgent {
     private MyJSONParser parser;
     private Word word;
     private String url;
-    private String DBpediaClass;
-    private List<String> DBpediaTypes;
 
     public DBPediaAgent(Word word) {
         this.word = word;
@@ -34,18 +29,6 @@ public class DBPediaAgent {
                 "%20rdf%" +
                 "3Atype%20%3Ftype%0D%0A%7D%0D%0A%7D&format=application%2Fsparql-results%2Bjson&CXML" +
                 "_redir_for_subjs=121&CXML_redir_for_hrefs=&timeout=30000&debug=on";
-    }
-
-    public String getDBpediaClass() {
-        return null;
-    }
-
-    public List<String> getDBpediaTypes() {
-        return null;
-    }
-
-    public String getUrl() {
-        return url;
     }
 
     public void getValuesFromJSON() {
@@ -74,6 +57,4 @@ public class DBPediaAgent {
         String[] splits = value.split("/");
         return splits[splits.length-1];
     }
-
-
 }

@@ -9,7 +9,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import java.io.File;
 
 import lemm.StanfordLemmatizer;
 import parser.DBPediaAgent;
@@ -22,6 +21,7 @@ public class Controller {
     public String readFromFile() {
         String text = "At eight o'clock on Thursday morning\n" +
                 "Arthur didn't feel very good. churches, walking";
+        text = "Probably the path to Git executable is not valid.";
         return text;
     }
 
@@ -31,7 +31,7 @@ public class Controller {
         List<String> lemmatizedWords = slem.lemmatize(readFromFile());
         List<Word> words = new ArrayList<>();
 
-        /*for(String lemmatizedWord : lemmatizedWords){
+        for(String lemmatizedWord : lemmatizedWords){
             String wrong = " .,?!";
             if(!wrong.contains(lemmatizedWord) && !lemmatizedWord.contains("'")){
                 Word word = new Word(lemmatizedWord.substring(0,1).toUpperCase() + lemmatizedWord.substring(1));
@@ -42,7 +42,7 @@ public class Controller {
         for(Word word : words){
             DBPediaAgent dbPediaAgent = new DBPediaAgent(word);
             dbPediaAgent.getValuesFromJSON();
-        }*/
+        }
 
         Word word = new Word("Horse");word.setDBpediaClass("Mammal");
         words.add(word);
