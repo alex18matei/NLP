@@ -58,6 +58,7 @@ public class StanfordLemmatizer {
                 lemmas.add(token.get(LemmaAnnotation.class));
             }
         }
+        System.out.println(lemmas);
         return lemmas;
     }
 

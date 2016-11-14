@@ -1,5 +1,16 @@
 package main;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import java.io.File;
+
 import lemm.StanfordLemmatizer;
 import parser.DBPediaAgent;
 
@@ -9,24 +20,8 @@ import java.util.List;
 public class Controller {
 
     public String readFromFile() {
-        String text = "How could you be seeing into my eyes like open doors? \n" +
-                "You led me down into my core where I've became so numb \n" +
-                "Without a soul my spirit's sleeping somewhere cold \n" +
-                "Until you find it there and led it back home \n" +
-                "You woke me up inside \n" +
-                "Called my name and saved me from the dark \n" +
-                "You have bidden my blood and it ran \n" +
-                "Before I would become undone \n" +
-                "You saved me from the nothing I've almost become \n" +
-                "You were bringing me to life \n" +
-                "Now that I knew what I'm without \n" +
-                "You can've just left me \n" +
-                "You breathed into me and made me real \n" +
-                "Frozen inside without your touch \n" +
-                "Without your love, darling \n" +
-                "Only you are the life among the dead \n" +
-                "I've been living a lie, there's nothing inside \n" +
-                "You were bringing me to life.";
+        String text = "At eight o'clock on Thursday morning\n" +
+                "Arthur didn't feel very good. churches, walking";
         return text;
     }
 
@@ -36,26 +31,70 @@ public class Controller {
         List<String> lemmatizedWords = slem.lemmatize(readFromFile());
         List<Word> words = new ArrayList<>();
 
-        for(String lemmatizedWord : lemmatizedWords){
-            Word word = new Word(lemmatizedWord);
-            words.add(word);
+        /*for(String lemmatizedWord : lemmatizedWords){
+            String wrong = " .,?!";
+            if(!wrong.contains(lemmatizedWord) && !lemmatizedWord.contains("'")){
+                Word word = new Word(lemmatizedWord.substring(0,1).toUpperCase() + lemmatizedWord.substring(1));
+                words.add(word);
+            }
         }
 
         for(Word word : words){
-            DBPediaAgent dbPediaAgent = new DBPediaAgent();
-            word.setDBpediaClass(dbPediaAgent.getDBpediaClass());
-            word.setDBpediaTypes(dbPediaAgent.getDBpediaTypes());
-        }
+            DBPediaAgent dbPediaAgent = new DBPediaAgent(word);
+            dbPediaAgent.getValuesFromJSON();
+        }*/
 
+        Word word = new Word("Horse");word.setDBpediaClass("Mammal");
+        words.add(word);
         String xml = createXMLFromWordList(words);
-        writeXMLToFile(xml);
-
+        /*writeXMLToFile(xml);*/
     }
 
     private void writeXMLToFile(String xml) {
     }
 
     private String createXMLFromWordList(List<Word> words) {
+        try {
+            DocumentBuilderFactory dbFactory =
+                    DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder =
+                    dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.newDocument();
+
+            // root element
+            Element rootElement = doc.createElement("words");
+            doc.appendChild(rootElement);
+
+            for (Word word : words){
+                //  word element
+                Element element = doc.createElement("word");
+                rootElement.appendChild(element);
+
+                // setting attribute to element
+                Attr attr = doc.createAttribute("class");
+                attr.setValue(word.getDBpediaClass());
+                element.setAttributeNode(attr);
+                element.appendChild(
+                        doc.createTextNode(word.getValue())
+                );
+            }
+
+            // write the content into xml file
+            TransformerFactory transformerFactory =
+                    TransformerFactory.newInstance();
+            Transformer transformer =
+                    transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            /*StreamResult result =
+                    new StreamResult(new File("C:\\words.xml"));
+            transformer.transform(source, result);*/
+            // Output to console for testing
+            StreamResult consoleResult =
+                    new StreamResult(System.out);
+            transformer.transform(source, consoleResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

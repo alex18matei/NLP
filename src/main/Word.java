@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Word {
@@ -9,6 +10,7 @@ public class Word {
 
     public Word(String value) {
         this.value = value;
+        DBpediaTypes = new ArrayList<>();
     }
 
     public String getDBpediaClass() {
@@ -33,5 +35,17 @@ public class Word {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nValue: ").append(value);
+        sb.append("\nClass: ").append(DBpediaClass);
+        sb.append("\nTypes: ");
+        for(String type : DBpediaTypes){
+            sb.append(type).append(" ");
+        }
+        return sb.toString();
     }
 }
