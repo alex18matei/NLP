@@ -18,17 +18,33 @@ import parser.DBPediaAgent;
 import parser.DBPediaAgentLookup;
 import parser.DBPediaAgentSparql;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
 
     public String readFromFile() {
-        String text = "At eight o'clock on Thursday morning\n" +
-                "Arthur didn't feel very good. churches, walking";
-        text = "Probably the path to Git executable is not valid.";
-        return text;
+        BufferedReader br = null;
+        StringBuilder plainText = new StringBuilder();
+        try {
+            br = new BufferedReader(new FileReader(new File("input.txt")));
+            String line;
+            while ((line = br.readLine()) != null) {
+                plainText.append(line);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("exceptie: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return plainText.toString();
     }
 
     public void run() {
