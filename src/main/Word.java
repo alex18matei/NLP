@@ -4,20 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Word {
-    private String DBpediaClass;
+    private List<String> DBpediaClass;
     private List<String> DBpediaTypes;
     private String value;
 
     public Word(String value) {
         this.value = value;
         DBpediaTypes = new ArrayList<>();
+        DBpediaClass = new ArrayList<>();
     }
 
-    public String getDBpediaClass() {
+    public List<String> getDBpediaClass() {
         return DBpediaClass;
     }
 
-    public void setDBpediaClass(String DBpediaClass) {
+    public void setDBpediaClass(List<String> DBpediaClass) {
         this.DBpediaClass = DBpediaClass;
     }
 
@@ -41,7 +42,10 @@ public class Word {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\nValue: ").append(value);
-        sb.append("\nClass: ").append(DBpediaClass);
+        sb.append("\nClass: ");
+        for(String type : DBpediaClass){
+            sb.append(type).append(" ");
+        }
         sb.append("\nTypes: ");
         for(String type : DBpediaTypes){
             sb.append(type).append(" ");

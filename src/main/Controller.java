@@ -15,6 +15,8 @@ import org.w3c.dom.Element;
 
 import lemm.StanfordLemmatizer;
 import parser.DBPediaAgent;
+import parser.DBPediaAgentLookup;
+import parser.DBPediaAgentSparql;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,14 +45,19 @@ public class Controller {
             }
         }
 
-        for (Word word : words) {
-            DBPediaAgent dbPediaAgent = new DBPediaAgent(word);
-            dbPediaAgent.getValuesFromJSON();
-        }
+        /*List<Word> words = new ArrayList<>();
+        Word word = new Word("Horse");
+        word.getDBpediaClass().add("Mammal");
+        words.add(word);
 
-        /*Word word = new Word("Horse");
-        word.setDBpediaClass("Mammal");
-        words.add(word);*/
+        DBPediaAgentLookup dbPediaAgent = new DBPediaAgentLookup(word);
+        dbPediaAgent.getValuesFromXML();*/
+
+        for (Word word : words) {
+            DBPediaAgent dbPediaAgent = new DBPediaAgentSparql(word);
+            dbPediaAgent.getValues();
+            System.out.println(word.toString());
+        }
 
         Document xml = createXMLFromWordList(words);
         writeXMLToFile(xml);
@@ -96,10 +103,14 @@ public class Controller {
                 Element element = doc.createElement("word");
                 rootElement.appendChild(element);
 
-                if (word.getDBpediaClass() != null) {
+                if (word.getDBpediaClass().size() > 0) {
                     // setting attribute to element
                     Attr classAttr = doc.createAttribute("class");
-                    classAttr.setValue(word.getDBpediaClass());
+                    StringBuilder sb = new StringBuilder();
+                    for (String type : word.getDBpediaClass()) {
+                        sb.append(" " + type);
+                    }
+                    classAttr.setValue(sb.toString().substring(1));
                     element.setAttributeNode(classAttr);
                 }
 
