@@ -15,7 +15,6 @@ import org.w3c.dom.Element;
 
 import lemm.StanfordLemmatizer;
 import parser.DBPediaAgent;
-import parser.DBPediaAgentLookup;
 import parser.DBPediaAgentSparql;
 
 import java.io.*;
@@ -49,25 +48,18 @@ public class Controller {
 
     public void run() {
 
+        String text = readFromFile();
         StanfordLemmatizer slem = new StanfordLemmatizer();
-        List<String> lemmatizedWords = slem.lemmatize(readFromFile());
+        List<String> lemmatizedWords = slem.lemmatize(text);
         List<Word> words = new ArrayList<>();
 
         for (String lemmatizedWord : lemmatizedWords) {
             String wrong = " .,?!";
-            if (!wrong.contains(lemmatizedWord) && !lemmatizedWord.contains("'")) {
+            if (!wrong.contains(lemmatizedWord) && !lemmatizedWord.contains("'") && !lemmatizedWord.contains("`")) {
                 Word word = new Word(lemmatizedWord.substring(0, 1).toUpperCase() + lemmatizedWord.substring(1));
                 words.add(word);
             }
         }
-
-        /*List<Word> words = new ArrayList<>();
-        Word word = new Word("Horse");
-        word.getDBpediaClass().add("Mammal");
-        words.add(word);
-
-        DBPediaAgentLookup dbPediaAgent = new DBPediaAgentLookup(word);
-        dbPediaAgent.getValuesFromXML();*/
 
         for (Word word : words) {
             DBPediaAgent dbPediaAgent = new DBPediaAgentSparql(word);
@@ -75,6 +67,28 @@ public class Controller {
             System.out.println(word.toString());
         }
 
+        List<Word> expressions = new ArrayList<>();
+        for (int i = 0; i < words.size() - 1; i++) {
+            Word expression = new Word(words.get(i).getValue() + "_" + words.get(i + 1).getValue());
+
+            expressions.add(expression);
+            DBPediaAgent dbPediaAgent = new DBPediaAgentSparql(expression);
+            dbPediaAgent.getValues();
+
+            System.out.println(expression.toString());
+        }
+
+        for (int i = 0; i < words.size() - 2; i++) {
+            Word expression = new Word(words.get(i).getValue() + "_" + words.get(i + 1).getValue() + "_" + words.get(i).getValue());
+
+            expressions.add(expression);
+            DBPediaAgent dbPediaAgent = new DBPediaAgentSparql(expression);
+            dbPediaAgent.getValues();
+
+            System.out.println(expression.toString());
+        }
+
+        words.addAll(expressions);
         Document xml = createXMLFromWordList(words);
         writeXMLToFile(xml);
     }

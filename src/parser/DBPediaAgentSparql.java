@@ -38,7 +38,9 @@ public class DBPediaAgentSparql extends DBPediaAgent{
                 }
                 if (obj.has("type")) {
                     JSONObject typeObject = obj.getJSONObject("type");
-                    word.getDBpediaTypes().add(getValueFromURI(typeObject.getString("value")));
+                    if( typeObject.getString("value").contains("/ontology/")){
+                        word.getDBpediaTypes().add(getValueFromURI(typeObject.getString("value")));
+                    }
                 }
             }
         } catch (JSONException e) {
